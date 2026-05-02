@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}My Messages - Tech TMS{% endblock %}
+{% block page_title %}My Messages{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>💬 My Messages to Admin</h2>
+        <a href="{% url 'teacher_send_message' %}" class="btn btn-primary">+ New Message</a>
+    </div>
+
+    {% if my_messages %}
+    <div style="display:flex;flex-direction:column;gap:16px;padding:8px 0;">
+        {% for msg in my_messages %}
+        <div class="message-card">
+            <div class="message-header">
+                <h4>📌 {{ msg.subject }}</h4>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span class="status-badge status-{{ msg.status }}">{{ msg.get_status_display }}</span>
+                    <small style="color:var(--text-muted);">{{ msg.created_at|date:"M d, Y H:i" }}</small>
+                </div>
+            </div>
+            <div class="message-body">
+                <p style="color:var(--text-muted);line-height:1.6;">{{ msg.body }}</p>
+            </div>
+            {% if msg.admin_reply %}
+            <div class="admin-reply-box">
+                <strong>🗣 Admin Reply:</strong>
+                <p style="margin:6px 0 0;line-height:1.5;">{{ msg.admin_reply }}</p>
+                <small style="color:var(--text-muted);">{{ msg.replied_at|date:"M d, Y H:i" }}</small>
+            </div>
+            {% else %}
+            <div style="padding:10px 16px;background:rgba(107,114,128,0.08);border-radius:6px;margin-top:8px;">
+                <small style="color:var(--text-muted);">⏳ Awaiting admin reply…</small>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+        <div style="font-size:3rem;margin-bottom:16px;">📭</div>
+        <h3>No messages sent yet</h3>
+        <p>Send your first message to the admin about your schedule or availability.</p>
+        <a href="{% url 'teacher_send_message' %}" class="btn btn-primary" style="margin-top:16px;">Send First Message</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

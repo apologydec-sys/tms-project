@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Attendance - Tech TMS{% endblock %}
+{% block page_title %}Teacher Attendance{% endblock %}
+
+{% block content %}
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <!-- Mark Attendance Form -->
+    <div class="card">
+        <div class="card-header"><h2>📋 Mark Attendance</h2></div>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<small class="field-error">{{ field.errors|striptags }}</small>{% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:12px;">✅ Save Attendance</button>
+        </form>
+    </div>
+
+    <!-- Today's Summary -->
+    <div class="card">
+        <div class="card-header">
+            <h2>📅 Today's Attendance</h2>
+            <span style="color:var(--text-muted);font-size:0.85rem;">{{ today|date:"M d, Y" }}</span>
+        </div>
+        {% if attendance_records %}
+        <table>
+            <thead>
+                <tr><th>Teacher</th><th>Status</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+                {% for rec in attendance_records %}
+                <tr>
+                    <td><strong>{{ rec.teacher.full_name|default:rec.teacher.username }}</strong></td>
+                    <td>
+                        <span class="status-badge status-{{ rec.status }}">{{ rec.get_status_display }}</span>
+                    </td>
+                    <td style="font-size:0.85rem;color:var(--text-muted);">{{ rec.notes|default:"—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:var(--text-muted);text-align:center;padding:30px 0;">No attendance marked for today yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Full History -->
+<div class="card" style="margin-top:24px;">
+    <div class="card-header"><h2>📊 Recent Attendance History</h2></div>
+    {% if all_records %}
+    <div style="overflow-x:auto;">
+        <table>
+            <thead>
+                <tr><th>Date</th><th>Teacher</th><th>Status</th><th>Notes</th><th>Marked By</th></tr>
+            </thead>
+            <tbody>
+                {% for rec in all_records %}
+                <tr>
+                    <td>{{ rec.date|date:"M d, Y" }}</td>
+                    <td><strong>{{ rec.teacher.full_name|default:rec.teacher.username }}</strong></td>
+                    <td><span class="status-badge status-{{ rec.status }}">{{ rec.get_status_display }}</span></td>
+                    <td style="font-size:0.85rem;color:var(--text-muted);">{{ rec.notes|default:"—" }}</td>
+                    <td style="font-size:0.85rem;">{{ rec.marked_by.username|default:"—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="color:var(--text-muted);text-align:center;padding:30px 0;">No attendance records yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

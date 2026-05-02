@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile Setup - Tech TMS{% endblock %}
+{% block page_title %}Complete Your Profile{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2>Welcome! Please set up your professional profile.</h2>
+    <p style="color: var(--text-muted); margin-bottom: 20px;">
+        Before you are assigned to a department, you must provide your profession details and select your subjects.
+    </p>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color: var(--text-muted); display: block; margin-top: 4px;">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <small class="error" style="color: var(--danger); display: block; margin-top: 4px;">{{ field.errors|striptags }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Save Profile & Continue</button>
+    </form>
+</div>
+
+<script>
+    // Add form-control class to all inputs/textareas
+    document.querySelectorAll('input[type="text"], input[type="file"], textarea').forEach(el => {
+        el.classList.add('form-control');
+    });
+    
+    // Custom handling for checkboxes to look better
+    document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+        el.style.marginRight = '8px';
+    });
+</script>
+{% endblock %}

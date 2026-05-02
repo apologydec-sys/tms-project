@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}All Teachers - Tech TMS{% endblock %}
+{% block page_title %}Teacher Registry{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>👩‍🏫 Registered Teachers ({{ teachers|length }})</h2>
+        <a href="{% url 'admin_register_teacher' %}" class="btn btn-primary">+ Register New Teacher</a>
+    </div>
+
+    {% if teachers %}
+    <div style="overflow-x:auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Department</th>
+                    <th>Skills</th>
+                    <th>Date Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for teacher in teachers %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <strong>{{ teacher.full_name|default:"—" }}</strong>
+                    </td>
+                    <td><span style="color:var(--primary);font-family:monospace;">@{{ teacher.username }}</span></td>
+                    <td>{{ teacher.email|default:"—" }}</td>
+                    <td>{{ teacher.phone|default:"—" }}</td>
+                    <td>
+                        {% if teacher.teacher_profile.department %}
+                            <span class="tag">{{ teacher.teacher_profile.department.name }}</span>
+                        {% else %}
+                            <span style="color:var(--text-muted);font-size:0.85rem;">No profile</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if teacher.teacher_profile.skills %}
+                            <span style="font-size: 0.85rem;">{{ teacher.teacher_profile.skills }}</span>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>{{ teacher.date_joined_school|default:teacher.date_joined|date:"M d, Y" }}</td>
+                    <td>
+                        <form method="post" action="{% url 'admin_delete_teacher' teacher.id %}" onsubmit="return confirm('Delete {{ teacher.full_name|default:teacher.username }}? This cannot be undone.');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">🗑 Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+        <div style="font-size:3rem;margin-bottom:16px;">👩‍🏫</div>
+        <h3>No teachers registered yet</h3>
+        <p>Get started by registering your first teacher.</p>
+        <a href="{% url 'admin_register_teacher' %}" class="btn btn-primary" style="margin-top:16px;">Register First Teacher</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

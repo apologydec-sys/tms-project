@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Delete - Tech TMS{% endblock %}
+{% block page_title %}Confirm Delete{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <h2>⚠️ Confirm Deletion</h2>
+        </div>
+        <p style="margin-bottom: 24px; line-height: 1.6;">
+            Are you sure you want to delete the teacher <strong>{{ teacher.full_name|default:teacher.username }}</strong>?
+            <br><br>
+            This will permanently remove their account, profile, and all associated attendance records and schedules. 
+            <span style="color: var(--danger); font-weight: 600;">This action cannot be undone.</span>
+        </p>
+        
+        <form method="post" style="display: flex; gap: 12px;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" style="flex: 1; justify-content: center;">🗑 Yes, Delete Teacher</button>
+            <a href="{% url 'admin_teacher_list' %}" class="btn btn-outline" style="flex: 1; justify-content: center; text-align: center;">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TMS Dashboard{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.1">
+    <meta name="theme-color" content="#4F46E5">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-icon">🎓</span>
+                <span class="logo-text">Tech TMS</span>
+            </div>
+            <nav class="sidebar-nav">
+                {% if user.is_admin %}
+                    <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                        <span class="nav-icon">📊</span> Overview
+                    </a>
+                    <a href="{% url 'admin_teacher_list' %}" class="nav-link {% if 'teacher' in request.resolver_match.url_name and 'admin' in request.resolver_match.url_name %}active{% endif %}">
+                        <span class="nav-icon">👩‍🏫</span> Teachers
+                    </a>
+                    <a href="{% url 'admin_register_teacher' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_register_teacher' %}active{% endif %}">
+                        <span class="nav-icon">➕</span> Register Teacher
+                    </a>
+                    <a href="{% url 'admin_attendance' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_attendance' %}active{% endif %}">
+                        <span class="nav-icon">📋</span> Attendance
+                    </a>
+                    <a href="{% url 'admin_messages' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_messages' %}active{% endif %}">
+                        <span class="nav-icon">✉️</span> Messages
+                        {% if unread_messages_count %}
+                            <span class="badge">{{ unread_messages_count }}</span>
+                        {% endif %}
+                    </a>
+                {% elif user.is_teacher %}
+                    <a href="{% url 'teacher_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'teacher_dashboard' %}active{% endif %}">
+                        <span class="nav-icon">🏠</span> My Dashboard
+                    </a>
+                    <a href="{% url 'teacher_send_message' %}" class="nav-link {% if request.resolver_match.url_name == 'teacher_send_message' %}active{% endif %}">
+                        <span class="nav-icon">📨</span> Message Admin
+                    </a>
+                    <a href="{% url 'teacher_my_messages' %}" class="nav-link {% if request.resolver_match.url_name == 'teacher_my_messages' %}active{% endif %}">
+                        <span class="nav-icon">💬</span> My Messages
+                    </a>
+                {% endif %}
+                <div class="sidebar-divider"></div>
+                <a href="{% url 'logout' %}" class="nav-link nav-logout">
+                    <span class="nav-icon">🚪</span> Logout
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Navbar -->
+            <header class="navbar">
+                <button class="sidebar-toggle" id="sidebarToggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+                <div class="page-title">
+                    <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+                </div>
+                <div class="user-info">
+                    <span class="avatar">{{ user.username|first|upper }}</span>
+                    <span>{{ user.full_name|default:user.username }}</span>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <section class="content">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                {% block content %}
+                {% endblock %}
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Auto-dismiss alerts after 4 seconds
+        document.querySelectorAll('.alert').forEach(el => {
+            setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-10px)';
+                setTimeout(() => el.remove(), 300);
+            }, 4000);
+        });
+    </script>
+</body>
+</html>

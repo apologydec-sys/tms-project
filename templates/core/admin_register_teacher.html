@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Register Teacher - Tech TMS{% endblock %}
+{% block page_title %}Register New Teacher{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <h2>👩‍🏫 Register a New Teacher</h2>
+            <a href="{% url 'admin_teacher_list' %}" class="btn btn-sm btn-outline">← Back to Teachers</a>
+        </div>
+        <p style="color:var(--text-muted);margin-bottom:24px;">
+            Fill in the details below to create a teacher account. You can register as many teachers as needed.
+        </p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username *</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}<small class="field-error">{{ form.username.errors|striptags }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.full_name.id_for_label }}">Full Name *</label>
+                    {{ form.full_name }}
+                    {% if form.full_name.errors %}<small class="field-error">{{ form.full_name.errors|striptags }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email Address</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<small class="field-error">{{ form.email.errors|striptags }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}<small class="field-error">{{ form.phone.errors|striptags }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.date_joined_school.id_for_label }}">Date Joined School</label>
+                    {{ form.date_joined_school }}
+                    {% if form.date_joined_school.errors %}<small class="field-error">{{ form.date_joined_school.errors|striptags }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.department.id_for_label }}">Department</label>
+                    {{ form.department }}
+                    {% if form.department.errors %}<small class="field-error">{{ form.department.errors|striptags }}</small>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.skills.id_for_label }}">Skills Acquired</label>
+                {{ form.skills }}
+                {% if form.skills.errors %}<small class="field-error">{{ form.skills.errors|striptags }}</small>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.profession_details.id_for_label }}">Professional Profile</label>
+                {{ form.profession_details }}
+                {% if form.profession_details.errors %}<small class="field-error">{{ form.profession_details.errors|striptags }}</small>{% endif %}
+            </div>
+
+            <hr style="border:none;border-top:1px solid var(--border);margin:20px 0;">
+            <h3 style="color:var(--text-muted);font-size:0.9rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:16px;">🔒 Account Password</h3>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">Password *</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}<small class="field-error">{{ form.password1.errors|striptags }}</small>{% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">Confirm Password *</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}<small class="field-error">{{ form.password2.errors|striptags }}</small>{% endif %}
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:24px;">
+                <button type="submit" class="btn btn-primary" style="flex:1;">✅ Register Teacher</button>
+                <a href="{% url 'admin_register_teacher' %}" class="btn btn-outline" style="flex:1;text-align:center;">+ Register Another</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

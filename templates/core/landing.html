@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Winneba Technical Institute TMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+</head>
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <span>Tech TMS</span>
+        </div>
+        <div class="nav-links">
+            <a href="#gallery">Gallery</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-outline" style="padding: 0.5rem 1.5rem;">Staff Registration</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-slider" id="heroSlider">
+            <div class="slide active" style="background-image: url('{% static 'images/school/slide1.png' %}')"></div>
+            <div class="slide" style="background-image: url('{% static 'images/school/slide2.png' %}')"></div>
+            <div class="slide" style="background-image: url('{% static 'images/school/slide3.png' %}')"></div>
+            <div class="slide" style="background-image: url('{% static 'images/school/slide4.png' %}')"></div>
+            <div class="slide" style="background-image: url('{% static 'images/school/slide5.png' %}')"></div>
+        </div>
+        <h1 class="welcome-text">
+            Welcome to <span class="animated-gradient">Winneba Technical Institute</span> Staff and Admin Management System
+        </h1>
+        <p class="hero-subtitle">
+            A state-of-the-art platform designed to empower educators, support staff, and streamline administrative excellence.
+        </p>
+        <div class="cta-group">
+            <a href="{% url 'login' %}" class="btn btn-primary">Staff Login</a>
+            <a href="{% url 'register' %}" class="btn btn-outline">Register with Serial Code</a>
+            <a href="{% url 'login' %}" class="btn btn-admin">Admin Portal</a>
+        </div>
+    </header>
+
+    <section id="gallery" class="gallery-section">
+        <h2 class="section-title">Our Institution</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="{% static 'images/school/slide1.png' %}" alt="Winneba Technical Institute">
+                <div class="gallery-overlay">
+                    <h3>Main Campus</h3>
+                    <p>Experience world-class technical education in a modern environment.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="{% static 'images/school/slide2.png' %}" alt="Modern Classroom">
+                <div class="gallery-overlay">
+                    <h3>Advanced Learning</h3>
+                    <p>Equipped with the latest technology for effective teaching.</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="{% static 'images/school/slide3.png' %}" alt="Technical Workshop">
+                <div class="gallery-overlay">
+                    <h3>Hands-on Excellence</h3>
+                    <p>Developing practical skills for the future of industry.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Winneba Technical Institute. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Hero Slider Logic
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        setInterval(nextSlide, 5000); // Change slide every 5 seconds
+
+        // Simple scroll reveal for gallery items
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            item.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>

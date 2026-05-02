@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}Teacher Dashboard - Tech TMS{% endblock %}
+{% block page_title %}My Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">🏫</div>
+        <h3>Department</h3>
+        <div class="value" style="font-size:1.3rem;">{{ profile.department.name|default:"Pending" }}</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+        <div class="stat-icon">📚</div>
+        <h3>My Subjects</h3>
+        <div class="value" style="font-size:1.1rem;">
+            {% for subject in profile.subjects.all %}{{ subject.name }}{% if not forloop.last %}, {% endif %}{% empty %}None{% endfor %}
+        </div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+        <div class="stat-icon">📅</div>
+        <h3>Upcoming Classes</h3>
+        <div class="value">{{ schedules|length }}</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);">
+        <div class="stat-icon">🔔</div>
+        <h3>Notifications</h3>
+        <div class="value">{{ notifications|length }}</div>
+    </div>
+</div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:8px;">
+    <!-- Left Column -->
+    <div>
+        <!-- Upcoming Classes -->
+        <div class="card">
+            <div class="card-header"><h2>📅 My Upcoming Classes</h2></div>
+            <table>
+                <thead><tr><th>Subject</th><th>Date</th><th>Time</th><th>Room</th></tr></thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                    <tr>
+                        <td><strong>{{ schedule.subject.name }}</strong></td>
+                        <td>{{ schedule.date|date:"M d, Y" }}</td>
+                        <td>{{ schedule.time|time:"H:i" }}</td>
+                        <td>{{ schedule.room|default:"TBA" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:24px;">No upcoming classes scheduled.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- My Attendance -->
+        <div class="card" style="margin-top:24px;">
+            <div class="card-header"><h2>📋 My Recent Attendance</h2></div>
+            <table>
+                <thead><tr><th>Date</th><th>Status</th><th>Notes</th></tr></thead>
+                <tbody>
+                    {% for att in my_attendance %}
+                    <tr>
+                        <td>{{ att.date|date:"M d, Y" }}</td>
+                        <td><span class="status-badge status-{{ att.status }}">{{ att.get_status_display }}</span></td>
+                        <td style="font-size:0.85rem;color:var(--text-muted);">{{ att.notes|default:"—" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:24px;">No attendance records yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div>
+        <!-- Quick message to admin -->
+        <div class="card">
+            <div class="card-header"><h2>📨 Message Admin</h2></div>
+            <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:16px;">
+                Need to inform admin about absence, leave, or anything else?
+            </p>
+            <a href="{% url 'teacher_send_message' %}" class="btn btn-primary" style="width:100%;text-align:center;display:block;">
+                ✍️ Send Message to Admin
+            </a>
+            <a href="{% url 'teacher_my_messages' %}" class="btn btn-outline" style="width:100%;text-align:center;display:block;margin-top:10px;">
+                💬 View My Messages
+            </a>
+        </div>
+
+        <!-- Notifications -->
+        <div class="card" style="margin-top:24px;">
+            <div class="card-header">
+                <h2>🔔 Notifications</h2>
+                {% with unread=notifications|length %}
+                    {% if unread %}<span class="badge">{{ unread }}</span>{% endif %}
+                {% endwith %}
+            </div>
+            <div style="max-height:350px;overflow-y:auto;">
+                {% for notif in notifications %}
+                <div class="notif-item {% if not notif.is_read %}notif-unread{% endif %}">
+                    <p style="margin-bottom:6px;font-size:0.9rem;line-height:1.5;">{{ notif.message }}</p>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <small style="color:var(--text-muted);">{{ notif.created_at|date:"M d, Y H:i" }}</small>
+                        {% if not notif.is_read %}
+                            <a href="{% url 'mark_notification_read' notif.id %}" class="btn btn-sm btn-outline">Mark Read</a>
+                        {% else %}
+                            <span style="color:var(--success);font-size:0.8rem;">✓ Read</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color:var(--text-muted);text-align:center;padding:24px 0;">No notifications.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Reply to Message - Tech TMS{% endblock %}
+{% block page_title %}Reply to Teacher{% endblock %}
+
+{% block content %}
+<div style="max-width:700px;margin:0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <h2>💬 Reply to Message</h2>
+            <a href="{% url 'admin_messages' %}" class="btn btn-sm btn-outline">← Back</a>
+        </div>
+
+        <!-- Original Message -->
+        <div class="message-card" style="margin-bottom:24px;background:var(--bg-secondary);">
+            <div class="message-header">
+                <div>
+                    <span class="avatar-sm">{{ msg.teacher.username|first|upper }}</span>
+                    <strong>{{ msg.teacher.full_name|default:msg.teacher.username }}</strong>
+                </div>
+                <small style="color:var(--text-muted);">{{ msg.created_at|date:"M d, Y H:i" }}</small>
+            </div>
+            <div class="message-body">
+                <h4>📌 {{ msg.subject }}</h4>
+                <p style="color:var(--text-muted);line-height:1.6;margin-top:8px;">{{ msg.body }}</p>
+            </div>
+        </div>
+
+        {% if msg.admin_reply %}
+        <div class="admin-reply-box" style="margin-bottom:24px;">
+            <strong>Previous Reply:</strong>
+            <p>{{ msg.admin_reply }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Reply Form -->
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.admin_reply.id_for_label }}">Your Reply</label>
+                {{ form.admin_reply }}
+                {% if form.admin_reply.errors %}
+                    <small class="field-error">{{ form.admin_reply.errors|striptags }}</small>
+                {% endif %}
+            </div>
+            <div style="display:flex;gap:12px;margin-top:16px;">
+                <button type="submit" class="btn btn-primary" style="flex:1;">📤 Send Reply & Notify Teacher</button>
+                <a href="{% url 'admin_messages' %}" class="btn btn-outline" style="flex:1;text-align:center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
